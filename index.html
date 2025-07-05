@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgentSpace | Nebulai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #27e6ff;
+      --bg: #0f1115;
+      --box-bg: #1a1c22;
+      --text: #ccc;
+      --glow: 0 0 8px #27e6ff, 0 0 15px #27e6ff99;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: white;
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    #starfield {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: black;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: #12141bdd;
+      backdrop-filter: blur(3px);
+    }
+    header img {
+      max-width: 300px;
+      width: 80%;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 10px #27e6ff55);
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      text-shadow: var(--glow);
+    }
+    p {
+      max-width: 900px;
+      margin: 10px auto;
+      color: var(--text);
+      padding: 0 10px;
+      font-size: 1rem;
+    }
+    section {
+      padding: 50px 20px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+    h2 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-shadow: var(--glow);
+    }
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .badge-container a img {
+      max-height: 30px;
+    }
+
+    .component-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .box {
+      background: var(--box-bg);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #27e6ff33;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .box:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--glow);
+    }
+
+    .box i {
+      font-size: 40px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: block;
+      text-shadow: var(--glow);
+    }
+
+    pre {
+      background: var(--box-bg);
+      padding: 15px;
+      border-radius: 8px;
+      color: var(--primary);
+      font-size: 14px;
+      overflow-x: auto;
+      max-width: 90vw;
+      margin: auto;
+      text-align: left;
+      box-shadow: 0 0 10px #27e6ff22;
+    }
+
+    footer {
+      background: #111;
+      padding: 20px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+    }
+
+    img.responsive {
+      max-width: 90%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #27e6ff44;
+      margin-top: 20px;
+    }
+
+    ol {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: left;
+      color: var(--text);
+      padding-left: 20px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.3rem;
+      }
+      pre {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🌌 Starfield Background -->
+  <canvas id="starfield"></canvas>
+
+  <!-- 🔊 Space Audio -->
+  <audio id="spaceAudio" src="https://cdn.pixabay.com/audio/2022/10/09/audio_31f07d9f6e.mp3" loop preload="auto"></audio>
+
+  <!-- Header Section -->
+  <header>
+    <img src="img/banner.png" alt="AgentSpace Logo" />
+    <h1>AgentSpace Framework</h1>
+    <p>An open-source system to auto-select, evaluate, and manage task-executing agents</p>
+    <div class="badge-container">
+      <a href="https://nebulai.network"><img src="https://img.shields.io/badge/Website-nebulai.network-27E6FF?style=plastic&logo=googlechrome&logoColor=white" /></a>
+      <a href="https://twitter.com/NebulaiHQ"><img src="https://img.shields.io/twitter/follow/NebulaiHQ"></a>
+      <a href="https://t.me/Nebulai_HQ"><img src="https://img.shields.io/badge/Telegram-Nebulai_HQ-27E6FF?style=plastic&logo=telegram&logoColor=white" /></a>
+      <a href="https://discord.gg/kyVHRQSFyg"><img src="https://img.shields.io/discord/1359770110310744156?color=27E6FF&label=Discord&logo=discord&logoColor=white&style=plastic" /></a>
+      <a href="https://docs.nebulai.network"><img src="https://img.shields.io/badge/Gitbook-Read_Docs-27E6FF?style=plastic&logo=gitbook&logoColor=white" /></a>
+    </div>
+  </header>
+
+  <!-- Intro Section -->
+  <section>
+    <h2>🚀 Introduction</h2>
+    <p>Agent Space is an open-source framework that automatically selects the appropriate agent based on task requirements, executes the task, evaluates the results, and returns the final result.</p>
+    <img src="img/Nebulai_Space.png" alt="Nebulai System" class="responsive"/>
+  </section>
+
+  <!-- Component Section -->
+  <section>
+    <h2>🧩 Core Components</h2>
+    <div class="component-box">
+      <div class="box">
+        <i class="ri-flashlight-line"></i>
+        <h3>🔥 Pioneer</h3>
+        <p>The task initiator that defines tags and tasks for the Root Agent.</p>
+      </div>
+      <div class="box">
+        <i class="ri-cpu-line"></i>
+        <h3>🚀 Origin Agent</h3>
+        <p>The central agent that selects suitable agents from the cluster and evaluates their output.</p>
+      </div>
+      <div class="box">
+        <i class="ri-group-line"></i>
+        <h3>🌐 Agent Cluster</h3>
+        <p>Multiple agents (A, B, C...) with specific tags assigned to perform tasks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agent Code Sample -->
+  <section>
+    <h2>📝 Agent Registration Example</h2>
+    <pre>
+# agent_1 
+{
+  "url" : "https://nebulai.agent/agent-1",
+  "name" : "agent 1",
+  "tag" : {1, 3, 4}
+}
+    </pre>
+    <p>Agents must be carefully tagged. Incorrect or poor tagging affects rating and task assignment.</p>
+  </section>
+
+  <!-- Contribute Section -->
+  <section>
+    <h2>🤝 How to Contribute</h2>
+    <p>We welcome contributions! Fork the repo, clone it, push your changes, and create a Pull Request.</p>
+    <ol>
+      <li>Fork the repository</li>
+      <li>Clone to your device</li>
+      <li>Commit and Push your updates</li>
+      <li>Create a Pull Request</li>
+    </ol>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Nebulai AgentSpace. Made with ❤️ for open collaboration.
+  </footer>
+
+  <!-- ⭐ Starfield Script -->
+  <script>
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
+    let stars = [], numStars = 250;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        z: Math.random() * canvas.width
+      });
+    }
+
+    function drawStars() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < numStars; i++) {
+        let star = stars[i];
+        star.z -= 1;
+        if (star.z <= 0) star.z = canvas.width;
+
+        let k = 128.0 / star.z;
+        let px = star.x * k + canvas.width / 2;
+        let py = star.y * k + canvas.height / 2;
+
+        if (px >= 0 && px <= canvas.width && py >= 0 && py <= canvas.height) {
+          let size = (1 - star.z / canvas.width) * 2;
+          ctx.beginPath();
+          ctx.arc(px, py, size, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(39, 230, 255, 0.8)";
+          ctx.fill();
+        }
+      }
+
+      requestAnimationFrame(drawStars);
+    }
+
+    drawStars();
+  </script>
+
+  <!-- 🎧 Autoplay Sound (No Button) -->
+  <script>
+    const audio = document.getElementById("spaceAudio");
+    document.body.addEventListener("click", () => {
+      audio.play();
+    }, { once: true });
+  </script>
+
+</body>
+</html>
