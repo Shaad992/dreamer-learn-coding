@@ -21,13 +21,11 @@
       color: white;
     }
 
-    /* Glowing animated dot grid */
     .dots {
       position: fixed;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background-size: 40px 40px;
       z-index: 0;
       display: grid;
       grid-template-columns: repeat(auto-fill, 40px);
@@ -44,14 +42,10 @@
     }
 
     @keyframes flicker {
-      0%, 100% { opacity: 0.2; box-shadow: 0 0 0px transparent; }
-      50% {
-        opacity: 1;
-        box-shadow: 0 0 8px currentColor;
-      }
+      0%, 100% { opacity: 0.15; box-shadow: none; }
+      50% { opacity: 1; box-shadow: 0 0 6px currentColor; }
     }
 
-    /* Random dot color flicker */
     .dot:nth-child(6n)  { color: #00f0ff; animation-delay: 0s; }
     .dot:nth-child(6n+1){ color: #ff00ff; animation-delay: 0.3s; }
     .dot:nth-child(6n+2){ color: #00ff88; animation-delay: 0.6s; }
@@ -60,14 +54,14 @@
     .dot:nth-child(6n+5){ color: #66ccff; animation-delay: 1.5s; }
 
     .title {
-      font-size: 3em;
+      font-size: 3.5em;
       font-family: 'Russo One', sans-serif;
       background: linear-gradient(90deg, #ff00ff, #00ffff, #ff9900);
       background-size: 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: glowText 5s ease-in-out infinite;
-      text-shadow: 0 0 25px #fff4;
+      text-shadow: 0 0 15px #fff4;
       z-index: 1;
     }
 
@@ -77,21 +71,22 @@
     }
 
     .subtitle {
-      font-size: 1.8em;
-      text-shadow: 0 0 15px #ffffffaa;
-      margin-bottom: 30px;
+      font-size: 1.5em;
+      text-shadow: 0 0 8px #00ffffaa;
+      margin-bottom: 25px;
       z-index: 1;
     }
 
     .box {
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.55);
       border: 2px solid #00ffff;
-      padding: 30px 20px;
+      padding: 30px 25px;
       border-radius: 25px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 0 35px #00ffff88;
+      box-shadow: 0 0 30px #00ffff88;
       z-index: 1;
+      backdrop-filter: blur(4px);
     }
 
     .box input {
@@ -103,7 +98,7 @@
       background: #111;
       color: #eee;
       font-size: 1em;
-      box-shadow: 0 0 10px #0ff2;
+      box-shadow: 0 0 10px #0ff3;
     }
 
     .box input::placeholder {
@@ -127,35 +122,44 @@
       font-weight: bold;
       cursor: pointer;
       background: linear-gradient(to right, #00f0ff, #0061ff);
-      box-shadow: 0 0 15px #0ff8;
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 18px #00ffff88;
+      transition: transform 0.25s, box-shadow 0.25s;
     }
 
     .buttons button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px #0ff;
+      transform: scale(1.07);
+      box-shadow: 0 0 25px #00ffffcc;
     }
 
     .powered {
-      margin-top: 30px;
-      text-align: center;
+      margin-top: 40px;
       font-size: 0.9em;
-      color: #0ff;
-      text-shadow: 0 0 10px #0ff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      background: rgba(0, 255, 255, 0.07);
+      border: 1px solid #00ffff66;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 0 15px #00ffff44;
       z-index: 1;
     }
 
-    .powered i {
-      color: gold;
-      margin-right: 5px;
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9em;
     }
   </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 </head>
 <body>
 
   <!-- Background Dots -->
   <div class="dots">
-    <!-- Generate multiple dots -->
     <script>
       document.write('<div class="dot"></div>'.repeat(300));
     </script>
@@ -167,19 +171,64 @@
 
   <!-- Login Box -->
   <div class="box">
-    <input type="email" placeholder="Email" />
-    <input type="password" placeholder="Password" />
-
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
     <div class="buttons">
-      <button>🔑 Login</button>
-      <button>✨ Signup</button>
+      <button onclick="login()">🔑 Login</button>
+      <button onclick="signup()">✨ Signup</button>
     </div>
+    <div id="status"></div>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer Capsule -->
   <div class="powered">
-    <i>⚡</i>Powered by <b>BLACKWOOD Ai</b>
+    ⚡ Powered by <strong>BLACKWOOD Ai</strong>
   </div>
 
+  <!-- Firebase Config and Auth -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqqISrJ88zXhMBeFqt4-KM11h0rQr1mkY",
+      authDomain: "dreamerlearncoding.firebaseapp.com",
+      projectId: "dreamerlearncoding",
+      storageBucket: "dreamerlearncoding.appspot.com",
+      messagingSenderId: "392164062663",
+      appId: "1:392164062663:web:b81740c8c543ed8ed355e2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    function showStatus(msg, color = "#0ff") {
+      const status = document.getElementById("status");
+      status.innerText = msg;
+      status.style.color = color;
+    }
+
+    function signup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      if (!email || !password) {
+        showStatus("❌ Please fill both fields", "red");
+        return;
+      }
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => showStatus("✅ Signup successful!"))
+        .catch(error => showStatus("❌ " + error.message, "red"));
+    }
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      if (!email || !password) {
+        showStatus("❌ Please fill both fields", "red");
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => showStatus("✅ Login successful!"))
+        .catch(error => showStatus("❌ " + error.message, "red"));
+    }
+  </script>
 </body>
 </html>

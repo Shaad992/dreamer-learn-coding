@@ -1,3 +1,18 @@
+// Firebase Configuration
+const firebaseConfig = {
+      apiKey: "AIzaSyBqqISrJ88zXhMBeFqt4-KM11h0rQr1mkY",
+      authDomain: "dreamerlearncoding.firebaseapp.com",
+      projectId: "dreamerlearncoding",
+      storageBucket: "dreamerlearncoding.appspot.com",
+      messagingSenderId: "392164062663",
+      appId: "1:392164062663:web:b81740c8c543ed8ed355e2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+
+
+
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 
