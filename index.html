@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dreamer Learn Coding</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Russo+One&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-check.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       background: #0a0d18;
       font-family: 'Orbitron', sans-serif;
@@ -16,37 +18,29 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      position: relative;
+      overflow-y: auto;
       color: white;
     }
-
     .dots {
       position: fixed;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
+      width: 100%; height: 100%;
       display: grid;
       grid-template-columns: repeat(auto-fill, 40px);
       grid-template-rows: repeat(auto-fill, 40px);
       pointer-events: none;
+      z-index: 0;
     }
-
     .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      margin: auto;
+      width: 6px; height: 6px;
+      border-radius: 50%; margin: auto;
       animation: flicker 3s infinite;
     }
-
     @keyframes flicker {
       0%, 100% { opacity: 0.15; box-shadow: none; }
       50% { opacity: 1; box-shadow: 0 0 6px currentColor; }
     }
-
-    .dot:nth-child(6n)  { color: #00f0ff; animation-delay: 0s; }
+    .dot:nth-child(6n){ color: #00f0ff; animation-delay: 0s; }
     .dot:nth-child(6n+1){ color: #ff00ff; animation-delay: 0.3s; }
     .dot:nth-child(6n+2){ color: #00ff88; animation-delay: 0.6s; }
     .dot:nth-child(6n+3){ color: #ffff00; animation-delay: 0.9s; }
@@ -54,7 +48,7 @@
     .dot:nth-child(6n+5){ color: #66ccff; animation-delay: 1.5s; }
 
     .title {
-      font-size: 3.5em;
+      font-size: 3em;
       font-family: 'Russo One', sans-serif;
       background: linear-gradient(90deg, #ff00ff, #00ffff, #ff9900);
       background-size: 300%;
@@ -63,36 +57,31 @@
       animation: glowText 5s ease-in-out infinite;
       text-shadow: 0 0 15px #fff4;
       z-index: 1;
+      margin-top: 30px;
+      text-align: center;
     }
-
     @keyframes glowText {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
 
-    .subtitle {
-      font-size: 1.5em;
-      text-shadow: 0 0 8px #00ffffaa;
-      margin-bottom: 25px;
-      z-index: 1;
-    }
-
-    .box {
-      background: rgba(0, 0, 0, 0.55);
+    .box, .modal {
+      background: rgba(0,0,0,0.55);
       border: 2px solid #00ffff;
-      padding: 30px 25px;
+      padding: 25px;
       border-radius: 25px;
       width: 90%;
       max-width: 400px;
       box-shadow: 0 0 30px #00ffff88;
-      z-index: 1;
+      z-index: 2;
       backdrop-filter: blur(4px);
+      margin-top: 20px;
     }
 
-    .box input {
+    input, select {
       width: 100%;
-      padding: 14px 15px 14px 20px;
-      margin-bottom: 20px;
+      padding: 12px 20px;
+      margin-bottom: 15px;
       border-radius: 30px;
       border: none;
       background: #111;
@@ -101,91 +90,136 @@
       box-shadow: 0 0 10px #0ff3;
     }
 
-    .box input::placeholder {
-      color: #aaa;
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 12px 2px #00ffff;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .eye-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1em;
+      cursor: pointer;
+      user-select: none;
+      color: #00ffffcc;
     }
 
     .buttons {
       display: flex;
       gap: 15px;
       justify-content: center;
-      margin-top: 10px;
     }
-
     .buttons button {
       flex: 1;
-      padding: 12px 0;
+      padding: 12px;
       font-size: 1em;
       border-radius: 30px;
       border: none;
-      color: #000;
       font-weight: bold;
       cursor: pointer;
       background: linear-gradient(to right, #00f0ff, #0061ff);
+      color: #000;
       box-shadow: 0 0 18px #00ffff88;
-      transition: transform 0.25s, box-shadow 0.25s;
+      transition: transform 0.25s;
     }
-
-    .buttons button:hover {
-      transform: scale(1.07);
-      box-shadow: 0 0 25px #00ffffcc;
-    }
-
+    .buttons button:hover { transform: scale(1.07); }
     .powered {
-      margin-top: 40px;
-      font-size: 0.9em;
-      padding: 10px 20px;
-      border-radius: 25px;
-      background: rgba(0, 255, 255, 0.07);
-      border: 1px solid #00ffff66;
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff;
-      backdrop-filter: blur(2px);
-      box-shadow: 0 0 15px #00ffff44;
-      z-index: 1;
-    }
-
-    #status {
-      margin-top: 15px;
+      margin: 25px 0 15px;
       text-align: center;
+      font-size: 0.95em;
+      color: #00ffff;
+    }
+    #status {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.95em;
+      font-weight: bold;
+    }
+    #signupModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    #signupModal.show { display: flex; }
+
+    label[for="dob"] {
+      font-size: 0.85em;
+      color: #00ffff;
+      margin: 0 0 5px 15px;
+      display: block;
+    }
+    label {
       font-size: 0.9em;
+      margin-left: 5px;
+      color: white;
+    }
+    a {
+      color: #00ffff;
+      font-size: 0.9em;
+      text-align: center;
+      display: block;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a:hover {
+      color: #66f9ff;
     }
   </style>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 </head>
 <body>
-
-  <!-- Background Dots -->
   <div class="dots">
-    <script>
-      document.write('<div class="dot"></div>'.repeat(300));
-    </script>
+    <script>document.write('<div class="dot"></div>'.repeat(300));</script>
   </div>
-
-  <!-- Titles -->
-  <div class="title">Dreamer</div>
-  <div class="subtitle">Learn Coding</div>
-
-  <!-- Login Box -->
+  <div class="title">Dreamer Learn Coding</div>
   <div class="box">
     <input id="email" type="email" placeholder="Email" />
-    <input id="password" type="password" placeholder="Password" />
+
+    <div class="password-wrapper">
+      <input id="password" type="password" placeholder="Password" />
+      <span class="eye-icon" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <a href="#" onclick="resetPassword()">🔁 Forgot Password?</a>
     <div class="buttons">
       <button onclick="login()">🔑 Login</button>
-      <button onclick="signup()">✨ Signup</button>
+      <button onclick="openSignupModal()">✨ Signup</button>
     </div>
     <div id="status"></div>
   </div>
-
-  <!-- Footer Capsule -->
-  <div class="powered">
-    ⚡ Powered by <strong>BLACKWOOD Ai</strong>
+  <div class="powered">⚡ Powered by BlackWood AI</div>
+  <div id="signupModal">
+    <div class="modal">
+      <input id="fname" type="text" placeholder="First Name" />
+      <input id="lname" type="text" placeholder="Last Name" />
+      <label for="dob">Date of Birth</label>
+      <input id="dob" type="date" />
+      <input id="signupEmail" type="email" placeholder="Email" />
+      <input id="signupPassword" type="password" placeholder="Password" />
+      <input id="confirmPassword" type="password" placeholder="Confirm Password" />
+      <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+        <input type="checkbox" id="terms" style="transform: scale(1.3); accent-color: #00ffff;" />
+        I agree to Terms & Conditions
+      </label>
+      <div class="buttons">
+        <button onclick="registerUser()">🚀 Register</button>
+        <button onclick="closeSignupModal()">❌ Cancel</button>
+      </div>
+      <div id="signupStatus" style="text-align:center; margin-top:10px;"></div>
+    </div>
   </div>
-
-  <!-- Firebase Config and Auth -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBqqISrJ88zXhMBeFqt4-KM11h0rQr1mkY",
@@ -195,8 +229,9 @@
       messagingSenderId: "392164062663",
       appId: "1:392164062663:web:b81740c8c543ed8ed355e2"
     };
-
     firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    firebase.appCheck().activate('6Ld3p3orAAAAAC6LOrYwZ2KwtqdnONq--FgyAnVI', true);
 
     function showStatus(msg, color = "#0ff") {
       const status = document.getElementById("status");
@@ -204,30 +239,67 @@
       status.style.color = color;
     }
 
-    function signup() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      if (!email || !password) {
-        showStatus("❌ Please fill both fields", "red");
-        return;
-      }
+    function openSignupModal() {
+      document.getElementById("signupModal").classList.add("show");
+    }
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => showStatus("✅ Signup successful!"))
-        .catch(error => showStatus("❌ " + error.message, "red"));
+    function closeSignupModal() {
+      document.getElementById("signupModal").classList.remove("show");
     }
 
     function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      if (!email || !password) {
-        showStatus("❌ Please fill both fields", "red");
-        return;
-      }
+      if (!email || !password) return showStatus("❌ Fill all fields", "red");
 
       firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => showStatus("✅ Login successful!"))
-        .catch(error => showStatus("❌ " + error.message, "red"));
+        .then(() => showStatus("✅ Logged in successfully!"))
+        .catch(e => showStatus("❌ " + e.message, "red"));
+    }
+
+    function resetPassword() {
+      const email = document.getElementById("email").value;
+      if (!email) return showStatus("❌ Enter your email to reset password", "red");
+      firebase.auth().sendPasswordResetEmail(email)
+        .then(() => showStatus("✅ Reset link sent to email"))
+        .catch(e => showStatus("❌ " + e.message, "red"));
+    }
+
+    function registerUser() {
+      const fname = document.getElementById("fname").value;
+      const lname = document.getElementById("lname").value;
+      const dob = document.getElementById("dob").value;
+      const email = document.getElementById("signupEmail").value;
+      const pass = document.getElementById("signupPassword").value;
+      const cpass = document.getElementById("confirmPassword").value;
+      const agreed = document.getElementById("terms").checked;
+      const status = document.getElementById("signupStatus");
+
+      if (!fname || !lname || !dob || !email || !pass || !cpass || !agreed)
+        return status.innerText = "❌ Fill all fields and agree T&C";
+      if (pass !== cpass) return status.innerText = "❌ Passwords do not match";
+
+      firebase.auth().createUserWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          const uid = userCredential.user.uid;
+          return db.collection("users").doc(uid).set({
+            fname, lname, dob, email, createdAt: new Date()
+          });
+        })
+        .then(() => {
+          status.style.color = "lime";
+          status.innerText = "✅ Registered successfully. Please verify email.";
+          firebase.auth().currentUser.sendEmailVerification();
+        })
+        .catch(e => {
+          status.style.color = "red";
+          status.innerText = "❌ " + e.message;
+        });
+    }
+
+    function togglePassword() {
+      const pwd = document.getElementById("password");
+      pwd.type = pwd.type === "password" ? "text" : "password";
     }
   </script>
 </body>
