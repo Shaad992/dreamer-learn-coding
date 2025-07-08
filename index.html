@@ -191,7 +191,7 @@
     </div>
     <div id="status"></div>
   </div>
-  <div class="powered">⚡ Powered by BlackWood AI</div>
+  <div class="powered">⚡ Powered by BlackWood Ai</div>
   <div id="signupModal">
     <div class="modal">
       <input id="fname" type="text" placeholder="First Name" />
@@ -227,10 +227,31 @@
     firebase.appCheck().activate('6Ld3p3orAAAAAC6LOrYwZ2KwtqdnONq--FgyAnVI', true);
 
     firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        window.location.href = "dashboard.html";
+  if (user) {
+    const userRef = db.collection("users").doc(user.uid);
+    userRef.get().then(doc => {
+      if (!doc.exists) {
+        // Agar purana user hai jiska profile missing hai, to basic profile create kar do
+        return userRef.set({
+          fname: "",
+          lname: "",
+          email: user.email || "",
+          dob: "",
+          mobile: "",
+          address: "",
+          photoURL: "",
+          createdAt: new Date()
+        });
       }
+    }).then(() => {
+      // Ab safe hai profile open karna
+      window.location.href = "dashboard.html";
+    }).catch((error) => {
+      console.error("Error auto-creating profile:", error);
+      window.location.href = "dashboard.html"; // fallback
     });
+  }
+});
 
     function showStatus(msg, color = "#0ff") {
       const status = document.getElementById("status");
