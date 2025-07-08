@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -77,7 +78,6 @@
       backdrop-filter: blur(4px);
       margin-top: 20px;
     }
-
     input, select {
       width: 100%;
       padding: 12px 20px;
@@ -89,27 +89,10 @@
       font-size: 1em;
       box-shadow: 0 0 10px #0ff3;
     }
-
     input:focus {
       outline: none;
       box-shadow: 0 0 12px 2px #00ffff;
     }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .eye-icon {
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.1em;
-      cursor: pointer;
-      user-select: none;
-      color: #00ffffcc;
-    }
-
     .buttons {
       display: flex;
       gap: 15px;
@@ -177,6 +160,17 @@
     a:hover {
       color: #66f9ff;
     }
+    .password-wrapper {
+      position: relative;
+    }
+    .password-wrapper span {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 1.2em;
+      color: #0ff;
+    }
   </style>
 </head>
 <body>
@@ -186,20 +180,18 @@
   <div class="title">Dreamer Learn Coding</div>
   <div class="box">
     <input id="email" type="email" placeholder="Email" />
-
     <div class="password-wrapper">
       <input id="password" type="password" placeholder="Password" />
-      <span class="eye-icon" onclick="togglePassword()">👁️</span>
+      <span id="eye" onclick="togglePassword()">👁️</span>
     </div>
-
-    <a href="#" onclick="resetPassword()">🔁 Forgot Password?</a>
+    <a href="#" onclick="resetPassword()"> Forgot Password?</a>
     <div class="buttons">
       <button onclick="login()">🔑 Login</button>
-      <button onclick="openSignupModal()">✨ Signup</button>
+      <button onclick="openSignupModal()"> Signup</button>
     </div>
     <div id="status"></div>
   </div>
-  <div class="powered">⚡ Powered by BlackWood Ai</div>
+  <div class="powered">⚡ Powered by BlackWood AI</div>
   <div id="signupModal">
     <div class="modal">
       <input id="fname" type="text" placeholder="First Name" />
@@ -214,12 +206,13 @@
         I agree to Terms & Conditions
       </label>
       <div class="buttons">
-        <button onclick="registerUser()">🚀 Register</button>
+        <button onclick="registerUser()"> Register</button>
         <button onclick="closeSignupModal()">❌ Cancel</button>
       </div>
       <div id="signupStatus" style="text-align:center; margin-top:10px;"></div>
     </div>
   </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBqqISrJ88zXhMBeFqt4-KM11h0rQr1mkY",
@@ -232,6 +225,12 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     firebase.appCheck().activate('6Ld3p3orAAAAAC6LOrYwZ2KwtqdnONq--FgyAnVI', true);
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
 
     function showStatus(msg, color = "#0ff") {
       const status = document.getElementById("status");
@@ -247,13 +246,30 @@
       document.getElementById("signupModal").classList.remove("show");
     }
 
+    function togglePassword() {
+      const pwd = document.getElementById("password");
+      const eye = document.getElementById("eye");
+      if (pwd.type === "password") {
+        pwd.type = "text";
+        eye.textContent = "🙈";
+      } else {
+        pwd.type = "password";
+        eye.textContent = "👁️";
+      }
+    }
+
     function login() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       if (!email || !password) return showStatus("❌ Fill all fields", "red");
 
       firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => showStatus("✅ Logged in successfully!"))
+        .then(() => {
+          showStatus("✅ Logged in successfully!");
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1000);
+        })
         .catch(e => showStatus("❌ " + e.message, "red"));
     }
 
@@ -295,11 +311,6 @@
           status.style.color = "red";
           status.innerText = "❌ " + e.message;
         });
-    }
-
-    function togglePassword() {
-      const pwd = document.getElementById("password");
-      pwd.type = pwd.type === "password" ? "text" : "password";
     }
   </script>
 </body>
