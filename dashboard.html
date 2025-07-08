@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dreamer Full Dashboard</title>
+  <title>Dreamer Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet"/>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -11,22 +12,20 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #050a16;
-      color: white;
       font-family: 'Orbitron', sans-serif;
+      color: white;
       height: 100vh;
       overflow: hidden;
-      position: relative;
     }
+
     .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center;
-      padding: 40px 20px;
       z-index: 1;
     }
+
     h1 {
       font-size: 2.5em;
       background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
@@ -36,110 +35,136 @@
       animation: glowText 6s ease-in-out infinite;
       opacity: 0.15;
     }
+
     @keyframes glowText {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
-    }@keyframes floatRandom {
-  0% { transform: translate(0, 0); }
-  50% { transform: translate(var(--dx, 5px), var(--dy, -10px)); }
-  100% { transform: translate(0, 0); }
-}
+    }
 
-.icon-wrapper {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  user-select: none;
-  touch-action: none;
-  z-index: 10;
-  animation: floatRandom 4s ease-in-out infinite;
-}
-.icon-label-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.1em;
-  color: black;
-  box-shadow: 0 0 20px;
-  animation: bubblePulse 2.5s ease-in-out infinite;
-}
-@keyframes bubblePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-.label { margin-top: 6px; font-size: 0.8em; color: #aaa; }
+    .icon-wrapper {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      touch-action: none;
+      z-index: 10;
+      animation: float 4s ease-in-out infinite;
+      cursor: pointer;
+    }
 
-.html-icon        { background: #ff5722;  box-shadow: 0 0 20px #ff5722aa; }
-.css-icon         { background: #2196f3;  box-shadow: 0 0 20px #2196f3aa; }
-.js-icon          { background: #fdd835;  box-shadow: 0 0 20px #fdd835aa; }
-.profile-icon     { background: #00e676;  box-shadow: 0 0 20px #00e676aa; cursor: pointer; }
-.logout-icon      { background: #ff4081;  box-shadow: 0 0 20px #ff4081aa; cursor: pointer; }
-.projects-icon    { background: #9c27b0;  box-shadow: 0 0 20px #9c27b0aa; }
-.calculator-icon  { background: #3f51b5;  box-shadow: 0 0 20px #3f51b5aa; }
-.ai-icon          { background: #00bcd4;  box-shadow: 0 0 20px #00bcd4aa; }
-.quizzes-icon     { background: #ffc107;  box-shadow: 0 0 20px #ffc107aa; }
-.leader-icon      { background: #8bc34a;  box-shadow: 0 0 20px #8bc34aaa; }
-.practice-icon    { background: #ff9800;  box-shadow: 0 0 20px #ff9800aa; }
-.cert-icon        { background: #e91e63;  box-shadow: 0 0 20px #e91e63aa; }
-.settings-icon    { background: #607d8b;  box-shadow: 0 0 20px #607d8baa; }
-.resources-icon   { background: #00acc1;  box-shadow: 0 0 20px #00acc1aa; }
+    @keyframes float {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(var(--dx, 5px), var(--dy, -8px)); }
+      100% { transform: translate(0, 0); }
+    }
 
-.profile-popup {
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: #111;
-  color: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px #00e676aa;
-  display: none;
-  z-index: 20;
-  width: 80%;
-  max-width: 400px;
-}
-.profile-popup h2 { color: #00e676; margin-bottom: 15px; }
-.profile-popup p { margin: 10px 0; font-size: 0.95em; }
-.close-btn {
-  margin-top: 20px;
-  background: #00e676;
-  color: black;
-  border: none;
-  padding: 10px 25px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
+    .icon {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow:
+        inset 0 0 12px rgba(255, 255, 255, 0.05),
+        0 0 20px rgba(0,255,255,0.1),
+        0 0 40px rgba(0,255,255,0.2);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
 
-/* Background Bubbles */
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  animation: rise 10s linear infinite;
-}
-@keyframes rise {
-  0% { transform: translateY(100vh); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateY(-10vh); opacity: 0; }
-}
+    .icon:hover {
+      transform: scale(1.1);
+    }
 
+    .label {
+      margin-top: 6px;
+      font-size: 0.75em;
+      color: #aaa;
+    }
+
+    .profile-icon  { background-color: #00e67633; box-shadow: 0 0 20px #00e676aa; }
+    .logout-icon   { background-color: #ff408133; box-shadow: 0 0 20px #ff4081aa; }
+    .settings-icon { background-color: #607d8b33; box-shadow: 0 0 20px #607d8baa; }
+
+    .profile-popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #111;
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00e676aa;
+      display: none;
+      z-index: 999;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .profile-popup h2 { color: #00e676; margin-bottom: 10px; }
+    .profile-popup p { margin: 5px 0; font-size: 0.9em; }
+    .close-btn {
+      margin-top: 15px;
+      background: #00e676;
+      color: black;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      animation: rise 10s linear infinite;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(100vh); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Welcome to<br>Dreamer Coding Dashboard</h1>
-  </div>  <!-- Background bubbles -->  <script>
+  </div>
+
+  <!-- Profile Popup -->
+  <div id="profilePopup" class="profile-popup">
+    <img id="profilePic" src="https://www.gravatar.com/avatar/?d=mp&s=120"
+         style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 15px;" />
+    <h2>👤 Your Profile</h2>
+    <p><strong>Name:</strong> <span id="pname">Loading...</span></p>
+    <p><strong>Date of Birth:</strong> <span id="pdob">Loading...</span></p>
+    <p><strong>Email:</strong> <span id="pemail">Loading...</span></p>
+    <p><strong>Mobile:</strong> <span id="pmobile">Loading...</span></p>
+    <p><strong>Address:</strong> <span id="paddress">Loading...</span></p>
+    <button class="close-btn" onclick="closePopup()">Close</button>
+  </div>
+
+  <!-- Firebase Init -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqqISrJ88zXhMBeFqt4-KM11h0rQr1mkY",
+      authDomain: "dreamerlearncoding.firebaseapp.com",
+      projectId: "dreamerlearncoding"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Bubbles -->
+  <script>
     for (let i = 0; i < 20; i++) {
       const b = document.createElement('div');
       b.className = 'bubble';
@@ -148,123 +173,98 @@
       b.style.animationDuration = `${6 + Math.random() * 10}s`;
       document.body.appendChild(b);
     }
-  </script>  <!-- Profile Popup -->  <div id="profilePopup" class="profile-popup">
-  <img id="profilePic" src="https://www.gravatar.com/avatar/?d=mp&s=120"
-       style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 15px; box-shadow: 0 0 15px #00e676;" />
-  <h2>👤 Your Profile</h2>2>
-    <p><strong>Name:</strong> <span id="pname">Loading...</span></p>
-    <p><strong>Date of Birth:</strong> <span id="pdob">Loading...</span></p>
-    <p><strong>Email:</strong> <span id="pemail">Loading...</span></p>
-    <p><strong>Mobile:</strong> <span id="pmobile">Loading...</span></p>
-    <p><strong>Address:</strong> <span id="paddress">Loading...</span></p>
-    <button class="close-btn" onclick="closePopup()">Close</button>
-  </div>  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBqqISrJ88zXhMBeFqt4-KM11h0rQr1mkY",
-      authDomain: "dreamerlearncoding.firebaseapp.com",
-      projectId: "dreamerlearncoding"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  </script>
 
+  <!-- Icon Creation + Logic -->
+  <script>
     const icons = [
       { top: '20px', left: '20px', icon: '👤', label: 'Profile', class: 'profile-icon', action: openProfile },
       { top: '20px', right: '20px', icon: '🚪', label: 'Logout', class: 'logout-icon', action: logout },
-      { top: '20px', left: '50%', transform: 'translateX(-50%)', icon: '🌐', label: 'HTML', class: 'html-icon' },
-      { top: '100px', left: '20px', icon: '🎨', label: 'CSS', class: 'css-icon' },
-      { top: '100px', right: '20px', icon: '⚙️', label: 'JavaScript', class: 'js-icon' },
-      { bottom: '100px', left: '20px', icon: '📦', label: 'Projects', class: 'projects-icon' },
-      { bottom: '20px', left: '20px', icon: '🧮', label: 'Calculator', class: 'calculator-icon' },
-      { bottom: '20px', right: '20px', icon: '🧠', label: 'AI Chat', class: 'ai-icon' },
-      { bottom: '100px', right: '20px', icon: '🎯', label: 'Quizzes', class: 'quizzes-icon' },
-      { bottom: '100px', left: '50%', transform: 'translateX(-50%)', icon: '🏆', label: 'Leaderboard', class: 'leader-icon' },
-      { top: '180px', left: '20px', icon: '🔁', label: 'Practice', class: 'practice-icon' },
-      { top: '180px', right: '20px', icon: '📜', label: 'Certificates', class: 'cert-icon' },
-      { top: '180px', left: '50%', transform: 'translateX(-50%)', icon: '⚙️', label: 'Settings', class: 'settings-icon' },
-      { bottom: '180px', left: '50%', transform: 'translateX(-50%)', icon: '📘', label: 'Resources', class: 'resources-icon' }
+      { top: '120px', left: '50%', transform: 'translateX(-50%)', icon: '⚙️', label: 'Settings', class: 'settings-icon', draggable: true }
     ];
 
     icons.forEach(i => {
       const wrap = document.createElement('div');
       wrap.className = 'icon-wrapper';
-      wrap.ontouchstart = startDrag;
-      wrap.ontouchmove = onDrag;
-      wrap.ontouchend = endDrag;
       if (i.action) wrap.onclick = i.action;
+      if (i.draggable) {
+        wrap.onmousedown = startDrag;
+        wrap.ontouchstart = startTouch;
+      }
       Object.assign(wrap.style, i);
       wrap.style.setProperty('--dx', `${Math.random() * 10 - 5}px`);
       wrap.style.setProperty('--dy', `${Math.random() * -20}px`);
       wrap.innerHTML = `
-        <div class="icon-label-group">
-          <div class="icon ${i.class}">${i.icon}</div>
-          <div class="label">${i.label}</div>
-        </div>
+        <div class="icon ${i.class}">${i.icon}</div>
+        <div class="label">${i.label}</div>
       `;
       document.body.appendChild(wrap);
     });
 
-    let active = null;
-    let shiftX = 0;
-    let shiftY = 0;
-
+    // Drag Logic
+    let active = null, offsetX = 0, offsetY = 0;
     function startDrag(e) {
-      active = e.target.closest('.icon-wrapper');
-      const touch = e.touches[0];
-      const rect = active.getBoundingClientRect();
-      shiftX = touch.clientX - rect.left;
-      shiftY = touch.clientY - rect.top;
+      active = e.currentTarget;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+      document.onmousemove = onDrag;
+      document.onmouseup = () => document.onmousemove = null;
     }
 
     function onDrag(e) {
       if (!active) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const x = touch.clientX - shiftX;
-      const y = touch.clientY - shiftY;
-      active.style.left = `${x}px`;
-      active.style.top = `${y}px`;
+      active.style.left = `${e.pageX - offsetX}px`;
+      active.style.top = `${e.pageY - offsetY}px`;
       active.style.right = "auto";
       active.style.bottom = "auto";
       active.style.transform = "none";
     }
 
-    function endDrag() { active = null; }
-
-    function logout() {
-      firebase.auth().signOut().then(() => {
-        window.location.href = "index.html";
-      });
+    function startTouch(e) {
+      active = e.currentTarget;
+      const touch = e.touches[0];
+      const rect = active.getBoundingClientRect();
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+      document.ontouchmove = onTouchMove;
+      document.ontouchend = () => document.ontouchmove = null;
     }
 
-    function openProfile() {
-  const user = firebase.auth().currentUser;
-  if (user) {
-    db.collection("users").doc(user.uid).get().then(doc => {
-      if (!doc.exists) {
-        alert("Profile not found!");
-        return;
-      }
-      const data = doc.data();
-      document.getElementById("pname").innerText = (data.fname || "") + " " + (data.lname || "");
-      document.getElementById("pdob").innerText = data.dob || "N/A";
-      document.getElementById("pemail").innerText = data.email || "N/A";
-      document.getElementById("pmobile").innerText = data.mobile || "N/A";
-      document.getElementById("paddress").innerText = data.address || "N/A";
+    function onTouchMove(e) {
+      if (!active) return;
+      const touch = e.touches[0];
+      active.style.left = `${touch.clientX - offsetX}px`;
+      active.style.top = `${touch.clientY - offsetY}px`;
+      active.style.right = "auto";
+      active.style.bottom = "auto";
+      active.style.transform = "none";
+    }
 
-      const img = document.getElementById("profilePic");
-      if (img && data.photoURL) {
-        img.src = data.photoURL;
+    // Open Profile FAST
+    function openProfile() {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        db.collection("users").doc(user.uid).get().then(doc => {
+          const data = doc.data() || {};
+          document.getElementById("pname").innerText = (data.fname || "") + " " + (data.lname || "");
+          document.getElementById("pdob").innerText = data.dob || "N/A";
+          document.getElementById("pemail").innerText = data.email || "N/A";
+          document.getElementById("pmobile").innerText = data.mobile || "N/A";
+          document.getElementById("paddress").innerText = data.address || "N/A";
+          const img = document.getElementById("profilePic");
+          if (data.photoURL) img.src = data.photoURL;
+          document.getElementById("profilePopup").style.display = "block"; // 🔥 No delay
+        }).catch(err => alert("Error loading profile"));
       }
-      document.getElementById("profilePopup").style.display = "block";
-    }).catch(error => {
-      console.error("Error fetching profile:", error);
-      alert("Something went wrong loading your profile.");
-    });
-  }
-}
+    }
 
     function closePopup() {
       document.getElementById("profilePopup").style.display = "none";
     }
-  </script></body>
+
+    function logout() {
+      firebase.auth().signOut().then(() => window.location.href = "index.html");
+    }
+  </script>
+</body>
 </html>
